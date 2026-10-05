@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: narangos-platform
+  namespace: narangos
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: narangos
+  template:
+    metadata:
+      labels:
+        app: narangos
+    spec:
+      containers:
+      - name: narangos
+        image: narangos:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: narangos-secrets
+              key: github-token
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: narangos-service
+  namespace: narangos
+spec:
+  selector:
+    app: narangos
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
