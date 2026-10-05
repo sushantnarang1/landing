@@ -6,10 +6,10 @@ export default function ContactPage() {
     <div className="min-h-screen bg-bg-warm pt-32 pb-24 px-6">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-start">
         <div>
-          <h1 className="text-5xl font-bold tracking-tight mb-6">Let's talk<br />infrastructure.</h1>
+          <h1 className="text-5xl font-bold tracking-tight mb-6">Let&apos;s talk<br />infrastructure.</h1>
           <p className="text-xl text-neutral-500 leading-relaxed mb-12">
-            Whether you're looking for early access to NarangOS or need expert help 
-            scaling your platform engineering, we're ready to assist.
+            Whether you&apos;re looking for early access to NarangOS or need expert help 
+            scaling your platform engineering, we&apos;re ready to assist.
           </p>
           
           <div className="space-y-8">

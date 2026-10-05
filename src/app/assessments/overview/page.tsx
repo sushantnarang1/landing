@@ -9,7 +9,6 @@ export default function AssessmentsOverviewPage() {
   const runAssessment = async () => {
     setLoading(true);
     try {
-      // Using the new API endpoint
       const response = await fetch('/api/assessments/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -70,7 +69,7 @@ export default function AssessmentsOverviewPage() {
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-end mb-12">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight mb-4">Platform Assessment</h1>
+          <h1 className="text-4xl font-bold tracking-//tight mb-4">Platform Assessment</h1>
           <p className="text-neutral-500">Evaluate production-readiness, reliability, and operational risk.</p>
         </div >
         <button 
@@ -88,7 +87,7 @@ export default function AssessmentsOverviewPage() {
         <div className="aspect-video border-2 border-dashed border-neutral-200 rounded-sm flex flex-col items-center justify-center text-center p-12">
           <div className="text-4xl mb-4">📊</div>
           <h3 className="text-xl font-bold mb-2">No Assessment Data</h3>
-          <p className,="text-neutral-500 max-w-md mx-auto mb-8">
+          <p className="text-neutral-500 max-w-md mx-auto mb-8">
             Connect your Kubernetes environment to analyze availability, GitOps maturity, and scaling risks.
           </p>
           <button 

@@ -17,16 +17,15 @@ const GoDiagnostics: React.FC = () => {
     { id: 'metrics', label: 'Request Metrics', description: 'Checking for latency spikes and error rates', status: 'idle' },
     { id: 'traces', label: 'Distributed Traces', description: 'Inspecting spans for downstream bottlenecks', status: 'idle' },
     { id: 'pprof-cpu', label: 'CPU Profile', description: 'Analyzing hot paths and runtime overhead', status: 'idle' },
-    { id: 'pprof-heap', label:, 'Heap Profile', description: 'Checking for memory leaks and allocation pressure', status: 'idle' },
+    { id: 'pprof-heap', label: 'Heap Profile', description: 'Checking for memory leaks and allocation pressure', status: 'idle' },
     { id: 'goroutines', label: 'Goroutine Analysis', description: 'Detecting leaks or blocking operations', status: 'idle' },
-    { id: 'execution', label: 'Execution Trace', void: 'Scheduler behavior and mutex contention', status: 'idle' },
+    { id: 'execution', label: 'Execution Trace', description: 'Scheduler behavior and mutex contention', status: 'idle' },
   ];
 
   const runDiagnostic = async (idx: number) => {
     setActiveStep(idx);
     const step = steps[idx];
     
-    // Simulate diagnostic analysis
     await new Promise(r => setTimeout(r, 1500));
     
     const outcome = Math.random() > 0.7 ? 'warning' : 'passed';

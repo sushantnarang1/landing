@@ -44,8 +44,8 @@ const ContactForm: React.FC = () => {
       <div className="p-8 border border-neutral-200 bg-white text-center rounded-sm animate-in fade-in zoom-in duration-300">
         <div className="text-accent-green text-4xl mb-4">✓</div>
         <h3 className="text-xl font-bold mb-2">Thanks. Your message has been sent.</h3>
-        <p className="text-neutral-500">We'll review your enquiry and get back to you shortly.</p>
-      </div >
+        <p className="text-neutral-500">We&apos;ll review your enquiry and get back to you shortly.</p>
+      </div>
     );
   }
 
@@ -59,7 +59,7 @@ const ContactForm: React.FC = () => {
             className="w-full p-3 border border-neutral-200 bg-white rounded-sm focus:border-accent-orange outline-none transition-colors"
             onChange={(e) => setFormData({...formData, name: e.target.value})}
           />
-        </div >
+        </div>
         <div className="space-y-2">
           <label className="text-xs font-bold uppercase tracking-widest text-neutral-400">Company</label>
           <input 
@@ -67,15 +67,15 @@ const ContactForm: React.FC = () => {
             className="w-full p-3 border border-neutral-200 bg-white rounded-sm focus:border-accent-orange outline-none transition-colors"
             onChange={(e) => setFormData({...formData, company: e.target.value})}
           />
-        </div >
+        </div>
         <div className="space-y-2">
-          <label className="text-xs font-bold uppercase tracking-widest text-neutral-400">Work Email</label>
+          <label className="text-xs font-bold uppercase tracking-widest text-//neutral-400">Work Email</label>
           <input 
             type="email" required 
             className="w-full p-3 border border-neutral-200 bg-white rounded-sm focus:border-accent-orange outline-none transition-colors"
             onChange={(e) => setFormData({...formData, email: e.target.value})}
           />
-        </div >
+        </div>
         <div className="space-y-2">
           <label className="text-xs font-bold uppercase tracking-widest text-neutral-400">Phone (Optional)</label>
           <input 
@@ -83,14 +83,14 @@ const ContactForm: React.FC = () => {
             className="w-full p-3 border border-neutral-200 bg-white rounded-sm focus:border-accent-orange outline-none transition-colors"
             onChange={(e) => setFormData({...formData, phone: e.target.value})}
           />
-        </div >
-      </div >
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <label className="text-xs font-bold uppercase tracking-widest text-neutral-400">Company Size</label>
           <select 
-            className="w-full p-3 border border-neutral-200 bg-white rounded-sm focus:border-accent-orange outline-none transition-colors"
+            className="w-full p,3 border border-neutral-200 bg-white rounded-sm focus:border-accent-orange outline-none transition-colors"
             onChange={(e) => setFormData({...formData, companySize: e.target.value})}
           >
             <option value="">Select size</option>
@@ -100,7 +100,7 @@ const ContactForm: React.FC = () => {
             <option value="201-1000">201-1000 employees</option>
             <option value="1000+">1000+ employees</option>
           </select>
-        </div >
+        </div>
         <div className="space-y-2">
           <label className="text-xs font-bold uppercase tracking-widest text-neutral-400">Area of Interest</label>
           <select 
@@ -120,8 +120,8 @@ const ContactForm: React.FC = () => {
             <option value="Enterprise Discussion">Enterprise Discussion</option>
             <option value="Other">Other</option>
           </select>
-        </div >
-      </div >
+        </div>
+      </div>
 
       <div className="space-y-2">
         <label className="text-xs font-bold uppercase tracking-widest text-neutral-400">Message</label>
@@ -130,7 +130,7 @@ const ContactForm: React.FC = () => {
           className="w-full p-3 border border-neutral-200 bg-white rounded-sm focus:border-accent-orange outline-none transition-colors"
           onChange={(e) => setFormData({...formData, message: e.target.value})}
         ></textarea>
-      </div >
+      </div>
 
       <div className="flex items-start gap-3">
         <input 
@@ -141,12 +141,12 @@ const ContactForm: React.FC = () => {
         <span className="text-xs text-neutral-500 leading-relaxed">
           I understand that I should not submit passwords, credentials, API keys, or sensitive infrastructure configuration through this form.
         </span>
-      </div >
+      </div>
 
       {error && (
         <div className="p-3 bg-red-50 text-red-600 text-xs font-medium border border-red-100 rounded-sm">
           {error}
-        </div >
+        </div>
       )}
 
       <button 

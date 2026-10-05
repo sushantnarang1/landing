@@ -32,7 +32,7 @@ export const CAPACITY_RULES: AssessmentRule[] = [
     id: 'CAP-002',
     title: 'Oversized Resource Requests',
     category: 'Capacity',
-    C_evaluate: (data) => {
+    evaluate: (data) => {
       const pod = data?.pod;
       if (pod && pod.observedCPU && pod.requestCPU && pod.observedCPU < pod.requestCPU * 0.1) {
         return {
