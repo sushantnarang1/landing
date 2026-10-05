@@ -6,7 +6,7 @@ export interface PullRequestMetadata {
   repository: string;
 }
 
-export async function createInfrastructurePR(requestId: string, planId: string): Promise<PullRequestMetadata> {
+export async function createInfrastructurePR(requestId: string): Promise<PullRequestMetadata> {
   // Mocking GitHub App / API integration
   // In production: 
   // 1. Create branch from main

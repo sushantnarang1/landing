@@ -17,7 +17,7 @@ const AssessmentOverview: React.FC<{ report: AssessmentReport }> = ({ report }) 
     try {
       // Simplified UI-only demo flow
       await new Promise(r => setTimeout(r, 1000));
-      setPrUrl(`https://github.com/narangos/infra-repo/pull/${Math.floor(Math.random() * 1000)}`);
+      setPrUrl('https://github.com/narangos/infra-repo/pull/1');
     } catch (e) {
       console.error('Remediation failed', e);
     } finally {

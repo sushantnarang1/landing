@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { runPipelineStep, PIPELINE_DEFINITION, PipelineStatus } from '@/lib/infrastructure/pipeline';
-import { scanInfrastructure, SecurityScanResult } from '@/lib/infrastructure/security';
-import { evaluatePolicy, PolicyResult } from '@/lib/infrastructure/policy';
-import { createInfrastructurePR } from '@/lib/infrastructure/git';
+import { runPipelineStep, PIPELINE_DEFINITION, PipelineStatus, PipelineStep } from '@/lib/infrastructure/pipeline';
+import { scanInfrastructure } from '@/lib/infrastructure/security';
+import { evaluatePolicy } from '@/lib/infrastructure/policy';
+import { createInfrastructurePR, PullRequestMetadata } from '@/lib/infrastructure/git';
 
 const PipelineStepRow = ({ label, status, description, error }: { label: string, status: PipelineStatus, description?: string, error?: string }) => (
   <div className="flex items-center justify-between py-4 border-b border-neutral-100">
@@ -20,10 +20,10 @@ const PipelineStepRow = ({ label, status, description, error }: { label: string,
 );
 
 export default function RequestViewPage({ params }: { params: { id: string } }) {
-  const [steps, setSteps] = useState<Record<string, any>>({});
+  const [steps, setSteps] = useState<Record<string, PipelineStep>>({});
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
-  const [prMetadata, setPrMetadata] = useState<any>(null);
+  const [prMetadata, setPrMetadata] = useState<PullRequestMetadata | null>(null);
   const [isCreatingPR, setIsCreatingPR] = useState(false);
 
   useEffect(() => {
@@ -34,12 +34,26 @@ export default function RequestViewPage({ params }: { params: { id: string } }) 
       }
 
       const stepDef = PIPELINE_DEFINITION[currentStepIdx];
-      let result: any;
+      let result: PipelineStep;
 
       if (stepDef.id === 'security') {
-        result = await scanInfrastructure(params.id, 'mock-tf-code');
+        const scan = await scanInfrastructure(params.id, 'mock-tf-code');
+        result = {
+          id: stepDef.id,
+          label: stepDef.label,
+          status: scan.status,
+          result: `${scan.findings.length} security finding(s)`,
+        };
       } else if (stepDef.id === 'policy') {
-        result = await evaluatePolicy(params.id, {});
+        const policy = await evaluatePolicy(params.id);
+        result = {
+          id: stepDef.id,
+          label: stepDef.label,
+          status: policy.status,
+          result: policy.violations.length === 0
+            ? 'No policy violations'
+            : `${policy.violations.length} policy violation(s)`,
+        };
       } else {
         result = await runPipelineStep(params.id, stepDef.id);
       }
@@ -47,9 +61,9 @@ export default function RequestViewPage({ params }: { params: { id: string } }) 
       const normalizedResult = {
         id: stepDef.id,
         label: stepDef.label,
-        status: result.status as PipelineStatus,
-        result: result.result || (result.summary ? 'Findings detected' : result.violations?.length === 0 ? 'Step completed successfully' : 'Violations detected'),
-        error: result.error || (result.status === 'FAILED' ? 'Validation failed' : undefined),
+        status: result.status,
+        result: result.result ?? (result.status === 'PASSED' ? 'Step completed successfully' : 'Validation failed'),
+        error: result.error ?? (result.status === 'FAILED' ? 'Validation failed' : undefined),
       };
 
       setSteps(prev => ({ ...prev, [stepDef.id]: normalizedResult }));
@@ -67,7 +81,7 @@ export default function RequestViewPage({ params }: { params: { id: string } }) 
   const handleCreatePR = async () => {
     setIsCreatingPR(true);
     try {
-      const pr = await createInfrastructurePR(params.id, 'plan_v1');
+      const pr = await createInfrastructurePR(params.id);
       setPrMetadata(pr);
     } catch (e) {
       console.error(e);

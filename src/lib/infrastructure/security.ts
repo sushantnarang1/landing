@@ -24,7 +24,7 @@ export async function scanInfrastructure(requestId: string, terraformCode: strin
   // Mocking a security scan (Checkov/tfsec style)
   return new Promise((resolve) => {
     setTimeout(() => {
-      const isSecure = Math.random() > 0.2; 
+      const isSecure = !terraformCode.includes('public = true');
       const findings: SecurityFinding[] = [];
       
       if (!isSecure) {

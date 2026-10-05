@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from 'react';
 import AssessmentOverview from '@/components/AssessmentOverview';
+import { AssessmentReport } from '@/types/assessments/models';
 
 export default function AssessmentsOverviewPage() {
-  const [report, setReport] = useState<any>(null);
+  const [report, setReport] = useState<AssessmentReport | null>(null);
   const [loading, setLoading] = useState(false);
 
   const runAssessment = async () => {
@@ -56,7 +57,7 @@ export default function AssessmentsOverviewPage() {
       });
 
       if (!response.ok) throw new Error('Assessment failed');
-      const result = await response.json();
+      const result: AssessmentReport = await response.json();
       setReport(result);
     } catch (error) {
       console.error('Assessment error:', error);

@@ -1,5 +1,4 @@
-import { AssessmentRule } from '../engine';
-import { AssessmentFinding } from '@/types/assessments/models';
+import type { AssessmentRule } from '../engine';
 
 export const CONTROLLER_RULES: AssessmentRule[] = [
   {
@@ -8,13 +7,17 @@ export const CONTROLLER_RULES: AssessmentRule[] = [
     category: 'Controllers',
     evaluate: (data) => {
       const resource = data.customResource;
-      if (resource && resource.status === 'Terminating' && resource.durationTerminating > 3600) {
+      if (
+        resource?.status === 'Terminating' &&
+        typeof resource.durationTerminating === 'number' &&
+        resource.durationTerminating > 3600
+      ) {
         return {
           id: 'CTRL-001',
           title: 'Resource stuck in Terminating state',
           severity: 'HIGH',
           category: 'Controllers',
-          affectedResource: `CR/${resource.name}`,
+          affectedResource: `CR/${resource.name ?? 'unknown'}`,
           observedState: `Status: Terminating for ${resource.durationTerminating}s`,
           expectedState: 'Resources should be cleaned up and removed promptly',
           evidence: `Finalizer present: ${resource.finalizer}`,
@@ -34,13 +37,17 @@ export const CONTROLLER_RULES: AssessmentRule[] = [
     category: 'Controllers',
     evaluate: (data) => {
       const ctrl = data.controller;
-      if (ctrl && ctrl.leaderChangesLastHour > 5) {
+      if (
+        ctrl &&
+        typeof ctrl.leaderChangesLastHour === 'number' &&
+        ctrl.leaderChangesLastHour > 5
+      ) {
         return {
           id: 'CTRL-002',
           title: 'Controller leader election flapping',
           severity: 'MEDIUM',
           category: 'Controllers',
-          affectedResource: `Controller/${ctrl.name}`,
+          affectedResource: `Controller/${ctrl.name ?? 'unknown'}`,
           observedState: `${ctrl.leaderChangesLastHour} leader changes in 60m`,
           expectedState: 'Stable leader election for consistent reconciliation',
           evidence: `Event log shows frequent lease acquisitions`,

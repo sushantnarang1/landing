@@ -41,7 +41,7 @@ const PacketContextSection: React.FC = () => {
       setStep((s) => (s + 1) % steps.length);
     }, 3000);
     return () => clearInterval(timer);
-  }, []);
+  }, [steps.length]);
 
   return (
     <section className="py-24 px-6 bg-neutral-100">

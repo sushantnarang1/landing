@@ -1,5 +1,4 @@
-import { AssessmentRule } from '../engine';
-import { AssessmentFinding } from '@/types/assessments/models';
+import type { AssessmentRule } from '../engine';
 
 export const AUTOSCALING_RULES: AssessmentRule[] = [
   {
@@ -9,16 +8,19 @@ export const AUTOSCALING_RULES: AssessmentRule[] = [
     evaluate: (data) => {
       const hpa = data?.hpa;
       const pod = data?.pod;
-      if (hpa && hpa.metrics?.includes('cpu') && (!pod || !pod.resources || !pod.resources.requests || !pod.resources.requests.cpu)) {
+      if (
+        hpa?.metrics?.includes('cpu') &&
+        (!pod || !pod.resources?.requests?.cpu)
+      ) {
         return {
           id: 'SCALE-001',
           title: 'CPU Scaling with Missing Requests',
           severity: 'HIGH',
           category: 'Scaling',
-          affectedResource: `HPA/${hpa.name}`,
+          affectedResource: `HPA/${hpa.name ?? 'unknown'}`,
           observedState: 'HPA scales on CPU, but pods have no CPU request defined',
           expectedState: 'All scaling pods must have explicit resource requests',
-          evidence: `HPA: ${hpa.name}, Pod CPU Request: undefined`,
+          evidence: `HPA: ${hpa.name ?? 'unknown'}, Pod CPU Request: undefined`,
           whyItMatters: 'HPA calculates utilization as (Actual / Request). Without a request, utilization is undefined or erratic.',
           impact: 'Unpredictable scaling behavior or failure to scale up.',
           remediation: 'Add resource.requests.cpu to the pod specification.',
@@ -36,13 +38,19 @@ export const AUTOSCALING_RULES: AssessmentRule[] = [
     evaluate: (data) => {
       const hpa = data?.hpa;
       const metrics = data?.metrics;
-      if (hpa && hpa.metrics?.includes('cpu') && metrics && metrics.cpuUtilization < 20 && metrics.requestRate > 1000) {
+      if (
+        hpa?.metrics?.includes('cpu') &&
+        typeof metrics?.cpuUtilization === 'number' &&
+        typeof metrics.requestRate === 'number' &&
+        metrics.cpuUtilization < 20 &&
+        metrics.requestRate > 1000
+      ) {
         return {
           id: 'SCALE-002',
           title: 'Ineffective Scaling Signal',
           severity: 'MEDIUM',
           category: 'Scaling',
-          affectedResource: `HPA/${hpa.name}`,
+          affectedResource: `HPA/${hpa.name ?? 'unknown'}`,
           observedState: 'CPU utilization low while request rate is high',
           expectedState: 'Scaling signal should correlate with actual demand',
           evidence: `CPU: ${metrics.cpuUtilization}%, ReqRate: ${metrics.requestRate} req/s`,

@@ -9,9 +9,14 @@ type DiagnosticStep = {
   evidence?: string;
 };
 
+type DiagnosticResult = {
+  status: 'passed' | 'warning';
+  evidence: string;
+};
+
 const GoDiagnostics: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number | null>(null);
-  const [results, setResults] = useState<Record<string, any>>({});
+  const [results, setResults] = useState<Record<string, DiagnosticResult>>({});
 
   const steps: DiagnosticStep[] = [
     { id: 'metrics', label: 'Request Metrics', description: 'Checking for latency spikes and error rates', status: 'idle' },
@@ -28,7 +33,7 @@ const GoDiagnostics: React.FC = () => {
     
     await new Promise(r => setTimeout(r, 1500));
     
-    const outcome = Math.random() > 0.7 ? 'warning' : 'passed';
+    const outcome = idx === 2 ? 'warning' : 'passed';
     const evidence = outcome === 'warning' 
       ? `Detected high mutex contention in sync.Map usage at internal/cache.go:42` 
       : `No significant anomalies detected in ${step.label}`;
@@ -81,7 +86,7 @@ const GoDiagnostics: React.FC = () => {
           <div className="absolute top-0 left-0 w-full h-1 bg-accent-orange animate-pulse" />
           <h3 className="text-neutral-400 uppercase tracking-widest mb-4">Diagnostics Console</h3>
           <div className="space-y-4">
-            {Object.entries(results).map(([id, res]: [string, any]) => (
+            {Object.entries(results).map(([id, res]) => (
               <div key={id} className="animate-in fade-in slide-in-from-left-2 duration-300">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-accent-orange">&gt;</span>

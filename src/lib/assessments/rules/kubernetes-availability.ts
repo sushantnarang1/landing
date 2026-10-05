@@ -1,5 +1,4 @@
-import { AssessmentRule } from '../engine';
-import { AssessmentFinding } from '@/types/assessments/models';
+import type { AssessmentRule } from '../engine';
 
 export const K8S_AVAILABILITY_RULES: AssessmentRule[] = [
   {
@@ -8,16 +7,16 @@ export const K8S_AVAILABILITY_RULES: AssessmentRule[] = [
     category: 'Availability',
     evaluate: (data) => {
       const workload = data.workload;
-      if (!workload.pdb) {
+      if (workload && !workload.pdb) {
         return {
           id: 'K8S-AVAIL-001',
           title: 'Critical workload lacks disruption protection',
           severity: 'HIGH',
           category: 'Availability',
-          affectedResource: `Deployment/${workload.name}`,
+          affectedResource: `Deployment/${workload.name ?? 'unknown'}`,
           observedState: 'No PodDisruptionBudget configured',
           expectedState: 'PDB configured to protect minimum available replicas',
-          evidence: `Replicas: ${workload.replicas}, PDBs: 0`,
+          evidence: `Replicas: ${workload.replicas ?? 'unknown'}, PDBs: 0`,
           whyItMatters: 'Without a PDB, maintenance operations (like node drains) can evict all replicas simultaneously.',
           impact: 'Temporary total unavailability of the service during maintenance.',
           remediation: 'Create a PodDisruptionBudget with minAvailable: 1',
@@ -34,16 +33,16 @@ export const K8S_AVAILABILITY_RULES: AssessmentRule[] = [
     category: 'Availability',
     evaluate: (data) => {
       const workload = data.workload;
-      if (workload.zones && workload.zones.length === 1) {
+      if (workload?.zones && workload.zones.length === 1) {
         return {
           id: 'K8S-AVAIL-002',
           title: 'All replicas located in single Availability Zone',
           severity: 'CRITICAL',
           category: 'Availability',
-          affectedResource: `Deployment/${workload.name}`,
+          affectedResource: `Deployment/${workload.name ?? 'unknown'}`,
           observedState: `All pods located in ${workload.zones[0]}`,
           expectedState: 'Pods distributed across multiple AZs',
-          evidence: `Zonal Distribution: { ${workload.zones[0]}: ${workload.replicas} }`,
+          evidence: `Zonal Distribution: { ${workload.zones[0]}: ${workload.replicas ?? 'unknown'} }`,
           whyItMatters: 'A single zone outage will result in total service failure.',
           impact: 'Complete outage of the affected workload during AZ failure.',
           remediation: 'Implement topologySpreadConstraints to ensure multi-AZ distribution.',

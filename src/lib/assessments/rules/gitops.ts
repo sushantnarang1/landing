@@ -1,5 +1,4 @@
-import { AssessmentRule } from '../engine';
-import { AssessmentFinding } from '@/types/assessments/models';
+import type { AssessmentRule } from '../engine';
 
 export const GITOPS_RULES: AssessmentRule[] = [
   {
@@ -8,13 +7,17 @@ export const GITOPS_RULES: AssessmentRule[] = [
     category: 'GitOps',
     evaluate: (data) => {
       const app = data.gitopsApp;
-      if (app && app.status === 'OutOfSync') {
+      if (
+        app?.status === 'OutOfSync' &&
+        typeof app.actualReplicas === 'number' &&
+        typeof app.desiredReplicas === 'number'
+      ) {
         return {
           id: 'GITOPS-001',
           title: 'GitOps Drift Detected',
           severity: 'HIGH',
           category: 'GitOps',
-          affectedResource: `Application/${app.name}`,
+          affectedResource: `Application/${app.name ?? 'unknown'}`,
           observedState: `Actual replicas: ${app.actualReplicas}, Desired: ${app.desiredReplicas}`,
           expectedState: 'Cluster state should match Git source of truth',
           evidence: `Drift: ${app.actualReplicas - app.desiredReplicas} unexpected replicas`,
@@ -34,13 +37,13 @@ export const GITOPS_RULES: AssessmentRule[] = [
     category: 'GitOps',
     evaluate: (data) => {
       const app = data.gitopsApp;
-      if (app && !app.selfHeal) {
+      if (app && app.selfHeal === false) {
         return {
           id: 'GITOPS-002',
           title: 'Self-Healing Disabled',
           severity: 'MEDIUM',
           category: 'GitOps',
-          affectedResource: `Application/${app.name}`,
+          affectedResource: `Application/${app.name ?? 'unknown'}`,
           observedState: 'selfHeal: false',
           expectedState: 'selfHeal: true for production workloads',
           evidence: 'Application configuration shows self-healing is disabled.',

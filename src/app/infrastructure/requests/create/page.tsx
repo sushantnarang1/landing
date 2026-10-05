@@ -9,7 +9,7 @@ function CreateRequestForm() {
   const templateId = searchParams.get('templateId');
   
   const template = INFRASTRUCTURE_CATALOG.find(t => t.id === templateId);
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [formData, setFormData] = useState<Record<string, string | boolean>>({});
 
   if (!template) {
     return <div className="p-8 text-neutral-500">Template not found.</div>;

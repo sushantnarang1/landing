@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { AssessmentEngine } from '@/lib/assessments/engine';
+import { AssessmentEngine, isAssessmentData } from '@/lib/assessments/engine';
 import { K8S_AVAILABILITY_RULES } from '@/lib/assessments/rules/kubernetes-availability';
 import { GITOPS_RULES } from '@/lib/assessments/rules/gitops';
 import { AUTOSCALING_RULES } from '@/lib/assessments/rules/autoscaling';
@@ -8,10 +8,13 @@ import { CONTROLLER_RULES } from '@/lib/assessments/rules/controllers';
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { environment, data } = body;
+    const body: unknown = await request.json();
+    if (typeof body !== 'object' || body === null || Array.isArray(body)) {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
 
-    if (!environment || !data) {
+    const { environment, data } = body as Record<string, unknown>;
+    if (typeof environment !== 'string' || !environment || !isAssessmentData(data)) {
       return NextResponse.json({ error: 'Missing environment or data' }, { status: 400 });
     }
 
@@ -25,7 +28,7 @@ export async function POST(request: Request) {
     const report = await engine.run(data, environment);
     return NextResponse.json(report, { status: 200 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Assessment API Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NarangOS
 
-## Getting Started
+NarangOS is a Next.js application for infrastructure assessments and platform engineering workflows.
 
-First, run the development server:
+## Local development
+
+Use Node.js 22 and npm:
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app is available at [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Validation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Run the same checks as GitHub Actions before pushing:
 
-## Learn More
+```bash
+npm run lint
+npm run typecheck
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+GitHub Actions runs these checks on pushes and pull requests targeting `main`. There is no automated test suite or deployment step configured yet.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Container and AKS
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The Dockerfile is prepared for a production container using Next.js standalone output. To build and run it locally when Docker is available:
 
-## Deploy on Vercel
+```bash
+docker build -t narangos:local .
+docker run --rm -p 3000:3000 narangos:local
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Container publishing and AKS deployment are intentionally not configured. The Kubernetes manifest is a draft and needs an image registry, namespace, secrets, and deployment health checks before it is ready to use.

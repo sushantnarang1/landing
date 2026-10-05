@@ -3,11 +3,23 @@ import { MockEmailProvider, EmailPayload } from '@/lib/email/provider';
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body: unknown = await request.json();
+    if (typeof body !== 'object' || body === null || Array.isArray(body)) {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
     
     // 1. Server-side Validation
-    const { name, company, email, message, areaOfInterest } = body;
-    if (!name || !company || !email || !message) {
+    const { name, company, email, message, areaOfInterest } = body as Record<string, unknown>;
+    if (
+      typeof name !== 'string' ||
+      typeof company !== 'string' ||
+      typeof email !== 'string' ||
+      typeof message !== 'string' ||
+      !name ||
+      !company ||
+      !email ||
+      !message
+    ) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -25,8 +37,8 @@ export async function POST(request: Request) {
       to: 'sushantnarang@narangconsulting.com',
       from: 'noreply@narangos.com',
       replyTo: email,
-      subject: `New NarangOS Enquiry — ${company || name}`,
-      body: `New enquiry received from NarangOS.\n\nName: ${name}\nCompany: ${company}\nEmail: ${email}\nArea of Interest: ${areaOfInterest}\n\nMessage:\n${message}\n\nSubmitted: ${new Date().toISOString()}\nSource: narangconsulting.com`,
+      subject: `New NarangOS Enquiry — ${company}`,
+      body: `New enquiry received from NarangOS.\n\nName: ${name}\nCompany: ${company}\nEmail: ${email}\nArea of Interest: ${typeof areaOfInterest === 'string' ? areaOfInterest : ''}\n\nMessage:\n${message}\n\nSubmitted: ${new Date().toISOString()}\nSource: narangconsulting.com`,
     };
 
     // 3. Send via Provider
@@ -39,7 +51,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, messageId: result.messageId }, { status: 200 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Contact API Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

@@ -28,7 +28,7 @@ const AIInteractionSection: React.FC = () => {
       }, 800);
       return () => clearInterval(timer);
     }
-  }, [isAnalyzing]);
+  }, [analysisSteps.length, isAnalyzing]);
 
   const handleRun = () => {
     setShowResult(false);

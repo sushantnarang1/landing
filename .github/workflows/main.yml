@@ -1,13 +1,13 @@
-name: NarangOS CI/CD
+name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  build-and-test:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install Dependencies
@@ -25,28 +25,7 @@ jobs:
         run: npm run lint
 
       - name: Type Check
-        run: npm run build # Next.js build includes type checking
+        run: npm run typecheck
 
       - name: Build
         run: npm run build
-
-  deploy:
-    needs: build-and-test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Login to Registry
-        run: echo "Logging into container registry..." # Replace with actual registry login
-
-      - name: Build and Push Docker Image
-        run: |
-          docker build -t narangos:latest .
-          echo "Pushing image to registry..." # Replace with actual push command
-
-      - name: Deploy to Kubernetes
-        run: |
-          echo "Updating K8s deployment..."
-          # Example: kubectl set image deployment/narangos-platform narangos=narangos:latest
-          # This would require a KUBECONFIG secret in GitHub Actions

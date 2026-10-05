@@ -33,8 +33,8 @@ const ContactForm: React.FC = () => {
       }
 
       setStatus('success');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to send message');
       setStatus('error');
     }
   };

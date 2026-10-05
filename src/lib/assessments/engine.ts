@@ -4,7 +4,45 @@ export interface AssessmentRule {
   id: string;
   title: string;
   category: string;
-  evaluate: (data: any) => AssessmentFinding | null;
+  evaluate: (data: AssessmentData) => AssessmentFinding | null;
+}
+
+export interface AssessmentData {
+  workload?: {
+    name?: string;
+    replicas?: number;
+    pdb?: boolean | null;
+    zones?: string[];
+    resources?: { requests?: { cpu?: string } };
+  };
+  pod?: {
+    name?: string;
+    observedMemory?: number;
+    limitMemory?: number;
+    observedCPU?: number;
+    requestCPU?: number;
+    resources?: { requests?: { cpu?: string } };
+  };
+  gitopsApp?: {
+    name?: string;
+    status?: string;
+    actualReplicas?: number;
+    desiredReplicas?: number;
+    selfHeal?: boolean;
+  };
+  hpa?: { name?: string; metrics?: string[] };
+  metrics?: { cpuUtilization?: number; requestRate?: number };
+  customResource?: {
+    name?: string;
+    status?: string;
+    durationTerminating?: number;
+    finalizer?: string;
+  };
+  controller?: { name?: string; leaderChangesLastHour?: number };
+}
+
+export function isAssessmentData(value: unknown): value is AssessmentData {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 export class AssessmentEngine {
@@ -14,7 +52,7 @@ export class AssessmentEngine {
     this.rules.push(rule);
   }
 
-  async run(data: any, environment: string): Promise<AssessmentReport> {
+  async run(data: AssessmentData, environment: string): Promise<AssessmentReport> {
     const findings: AssessmentFinding[] = [];
     
     for (const rule of this.rules) {
@@ -48,10 +86,6 @@ export class AssessmentEngine {
       };
     });
 
-    const overallScore = Math.round(
-      scores.reduce((acc, s) => acc + (s.score * s.weight), 0) * (1 / (scores.length * 0.15)) // Normalizing
-    );
-    // Simple average for demo
     const avgScore = Math.round(scores.reduce((acc, s) => acc + s.score, 0) / scores.length);
 
     return {

@@ -11,7 +11,7 @@ export interface PolicyViolation {
   severity: 'ERROR' | 'WARNING';
 }
 
-export async function evaluatePolicy(requestId: string, planJson: any): Promise<PolicyResult> {
+export async function evaluatePolicy(requestId: string): Promise<PolicyResult> {
   // Mocking OPA/Rego policy evaluation
   return new Promise((resolve) => {
     setTimeout(() => {

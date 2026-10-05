@@ -27,6 +27,6 @@ export class TransactionalEmailProvider implements EmailProvider {
   async sendEmail(payload: EmailPayload): Promise<{ success: boolean; messageId?: string; error?: string }> {
     // In production, this would call SendGrid, Postmark, or AWS SES
     // throw new Error("Production email provider not configured");
-    return { success: false, error: "API Key missing" };
+    return { success: false, error: `Email delivery is not configured for ${payload.to}` };
   }
 }

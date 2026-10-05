@@ -11,7 +11,7 @@ export interface PipelineStep {
 export interface InfrastructureRequest {
   id: string;
   templateId: string;
-  formData: Record<string, any>;
+  formData: Record<string, string | boolean>;
   status: 'REQUESTED' | 'VALIDATING' | 'PLANNING' | 'READY_FOR_PR' | 'PR_CREATED' | 'MERGED' | 'DEPLOYED';
   steps: PipelineStep[];
   createdAt: Date;

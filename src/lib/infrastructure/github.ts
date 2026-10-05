@@ -31,7 +31,7 @@ export class GitHubService {
 
   async openPullRequest(title: string, body: string, head: string, base: string = 'main'): Promise<GitHubPRResponse> {
     if (!this.token) throw new Error('GITHUB_TOKEN not configured');
-    console.log(`[GitHub] Opening PR: ${title}`);
+    console.log(`[GitHub] Opening PR against ${base}: ${title}`);
     return {
       prNumber: Math.floor(Math.random() * 1000 + 100).toString(),
       prUrl: `https://github.com/${this.owner}/${this.repo}/pull/${Math.floor(Math.random() * 1000 + 100)}`,
