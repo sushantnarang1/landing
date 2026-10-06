@@ -3,13 +3,9 @@ import Link from 'next/link';
 
 const InfrastructureSidebar: React.FC = () => {
   const menuItems = [
-    { label: 'Overview', href: '/infrastructure' },
     { label: 'Catalog', href: '/infrastructure/catalog' },
-    { label: 'My Resources', href: '/infrastructure/my-resources' },
-    { label: 'Requests', href: '/infrastructure/requests' },
-    { label: 'Terraform Plans', href: '/infrastructure/plans' },
-    { label: 'Pull Requests', href: '/infrastructure/pull-requests' },
-    { label: 'Environments', href: '/infrastructure/environments' },
+    { label: 'Assessments', href: '/assessments/overview' },
+    { label: 'Diagnostics', href: '/assessments/diagnostics' },
   ];
 
   return (

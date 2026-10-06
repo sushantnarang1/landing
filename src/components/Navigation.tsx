@@ -12,16 +12,16 @@ const Navigation: React.FC = () => {
         
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-text-secondary">
           <Link href="#product" className="hover:text-accent-orange transition-colors">Product</Link>
-          <Link href="/infrastructure" className="hover:text-accent-orange transition-colors">Infrastructure</Link>
+          <Link href="/infrastructure/catalog" className="hover:text-accent-orange transition-colors">Infrastructure</Link>
           <Link href="/assessments/overview" className="hover:text-accent-orange transition-colors">Assessments</Link>
           <Link href="#security" className="hover:text-accent-orange transition-colors">Security</Link>
           <Link href="/contact" className="hover:text-accent-orange transition-colors">Contact</Link>
         </div>
 
         <div className="flex items-center">
-          <button className="bg-bg-dark text-text-inverse px-4 py-2 rounded text-sm font-medium hover:bg-neutral-800 transition-all">
+          <Link href="/contact" className="bg-bg-dark text-text-inverse px-4 py-2 rounded text-sm font-medium hover:bg-neutral-800 transition-all">
             Early Access
-          </button>
+          </Link>
         </div >
       </div >
     </nav>

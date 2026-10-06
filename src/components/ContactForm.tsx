@@ -1,7 +1,10 @@
 "use client";
 import React, { useState } from 'react';
+import { apiUrl } from '@/lib/api/client';
+import { useLocalBackend } from '@/lib/api/use-local-backend';
 
 const ContactForm: React.FC = () => {
+  const { isAvailable, isPages } = useLocalBackend();
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -21,7 +24,7 @@ const ContactForm: React.FC = () => {
     setError('');
 
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch(apiUrl('/api/contact'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -43,8 +46,8 @@ const ContactForm: React.FC = () => {
     return (
       <div className="p-8 border border-neutral-200 bg-white text-center rounded-sm animate-in fade-in zoom-in duration-300">
         <div className="text-accent-green text-4xl mb-4">✓</div>
-        <h3 className="text-xl font-bold mb-2">Thanks. Your message has been sent.</h3>
-        <p className="text-neutral-500">We&apos;ll review your enquiry and get back to you shortly.</p>
+        <h3 className="text-xl font-bold mb-2">Demo submission received.</h3>
+        <p className="text-neutral-500">This demo does not send or store your message.</p>
       </div>
     );
   }
@@ -151,10 +154,14 @@ const ContactForm: React.FC = () => {
 
       <button 
         type="submit" 
-        disabled={status === 'submitting'}
+        disabled={status === 'submitting' || !isAvailable}
         className="w-full py-4 bg-bg-dark text-text-inverse font-bold rounded-sm hover:bg-neutral-800 transition-all disabled:opacity-50"
       >
-        {status === 'submitting' ? 'Sending...' : 'Send Enquiry'}
+        {status === 'submitting'
+          ? 'Sending...'
+          : isPages && !isAvailable
+            ? 'Start local Docker app to enable'
+            : 'Send Enquiry'}
       </button>
     </form>
   );

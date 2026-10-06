@@ -2,8 +2,10 @@
 import React, { useState, Suspense } from 'react';
 import { INFRASTRUCTURE_CATALOG } from '@/types/infrastructure/catalog';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useLocalBackend } from '@/lib/api/use-local-backend';
 
 function CreateRequestForm() {
+  const { isAvailable, isPages } = useLocalBackend();
   const router = useRouter();
   const searchParams = useSearchParams();
   const templateId = searchParams.get('templateId');
@@ -18,7 +20,7 @@ function CreateRequestForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Submitting request:", { templateId, formData });
-    router.push(`/infrastructure/requests/view/${Math.floor(Math.random() * 10000)}`);
+    router.push(`/infrastructure/requests/view?id=${Math.floor(Math.random() * 10000)}`);
   };
 
   return (
@@ -92,8 +94,12 @@ function CreateRequestForm() {
 
       <div className="flex justify-end gap-4">
         <button type="button" className="px-6 py-3 text-sm font-medium text-neutral-500 hover:text-text-primary">Cancel</button>
-        <button type="submit" className="bg-bg-dark text-text-inverse px-8 py-3 rounded-sm font-bold hover:bg-neutral-800 transition-all">
-          Review Infrastructure
+        <button
+          type="submit"
+          disabled={!isAvailable}
+          className="bg-bg-dark text-text-inverse px-8 py-3 rounded-sm font-bold hover:bg-neutral-800 transition-all disabled:opacity-50"
+        >
+          {isPages && !isAvailable ? 'Start Docker to enable' : 'Review Infrastructure'}
         </button>
       </div >
     </form>

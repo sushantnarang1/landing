@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import LocalBackendStatus from "@/components/LocalBackendStatus";
 import "./globals.css";
 
 const inter = Inter({ 
@@ -42,6 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} antialiased`}>
+        <LocalBackendStatus />
         {children}
       </body>
     </html>

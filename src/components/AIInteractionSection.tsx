@@ -1,7 +1,9 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { useLocalBackend } from '@/lib/api/use-local-backend';
 
 const AIInteractionSection: React.FC = () => {
+  const { isAvailable, isPages } = useLocalBackend();
   const [query, setQuery] = useState("Why did checkout latency increase?");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showResult, setShowResult] = useState(false);
@@ -72,9 +74,10 @@ const AIInteractionSection: React.FC = () => {
               />
               <button 
                 onClick={handleRun}
-                className="text-xs bg-neutral-800 text-neutral-300 px-3 py-1 rounded hover:bg-neutral-700 transition-colors"
+                disabled={!isAvailable}
+                className="text-xs bg-neutral-800 text-neutral-300 px-3 py-1 rounded hover:bg-neutral-700 transition-colors disabled:opacity-50"
               >
-                Run
+                {isPages && !isAvailable ? 'Start Docker to enable' : 'Run'}
               </button>
             </div >
 

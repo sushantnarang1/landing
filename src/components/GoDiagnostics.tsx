@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import { useLocalBackend } from '@/lib/api/use-local-backend';
 
 type DiagnosticStep = {
   id: string;
@@ -15,6 +16,7 @@ type DiagnosticResult = {
 };
 
 const GoDiagnostics: React.FC = () => {
+  const { isAvailable } = useLocalBackend();
   const [activeStep, setActiveStep] = useState<number | null>(null);
   const [results, setResults] = useState<Record<string, DiagnosticResult>>({});
 
@@ -72,7 +74,7 @@ const GoDiagnostics: React.FC = () => {
                 )}
                 <button 
                   onClick={() => runDiagnostic(idx)}
-                  disabled={activeStep === idx}
+                  disabled={activeStep === idx || !isAvailable}
                   className="p-2 hover:bg-neutral-100 rounded-full transition-colors"
                 >
                   {activeStep === idx ? '⏳' : '▶️'}

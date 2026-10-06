@@ -1,11 +1,19 @@
-import { NextResponse } from 'next/server';
 import { MockEmailProvider, EmailPayload } from '@/lib/email/provider';
+import { apiJson, isAllowedOrigin, optionsResponse } from '@/lib/api/cors';
+
+export function OPTIONS(request: Request) {
+  return optionsResponse(request);
+}
 
 export async function POST(request: Request) {
+  if (!isAllowedOrigin(request.headers.get('origin'))) {
+    return apiJson(request, { error: 'Origin not allowed' }, 403);
+  }
+
   try {
     const body: unknown = await request.json();
     if (typeof body !== 'object' || body === null || Array.isArray(body)) {
-      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+      return apiJson(request, { error: 'Invalid request body' }, 400);
     }
     
     // 1. Server-side Validation
@@ -20,16 +28,16 @@ export async function POST(request: Request) {
       !email ||
       !message
     ) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return apiJson(request, { error: 'Missing required fields' }, 400);
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
+      return apiJson(request, { error: 'Invalid email address' }, 400);
     }
 
     if (message.length > 5000) {
-      return NextResponse.json({ error: 'Message too long' }, { status: 400 });
+      return apiJson(request, { error: 'Message too long' }, 400);
     }
 
     // 2. Format Email
@@ -49,10 +57,10 @@ export async function POST(request: Request) {
       throw new Error(result.error || 'Email delivery failed');
     }
 
-    return NextResponse.json({ success: true, messageId: result.messageId }, { status: 200 });
+    return apiJson(request, { success: true, messageId: result.messageId });
 
   } catch (error: unknown) {
     console.error('Contact API Error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return apiJson(request, { error: 'Internal server error' }, 500);
   }
 }

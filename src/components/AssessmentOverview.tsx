@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AssessmentReport, AssessmentFinding } from '@/types/assessments/models';
+import { useLocalBackend } from '@/lib/api/use-local-backend';
 
 const ScoreCircle = ({ label, score, color = 'text-text-primary' }: { label: string, score: number, color?: string }) => (
   <div className="flex flex-col items-center p-4 border border-neutral-200 rounded-sm bg-white">
@@ -9,6 +10,7 @@ const ScoreCircle = ({ label, score, color = 'text-text-primary' }: { label: str
 );
 
 const AssessmentOverview: React.FC<{ report: AssessmentReport }> = ({ report }) => {
+  const { isAvailable } = useLocalBackend();
   const [remediating, setRemediating] = useState<string | null>(null);
   const [prUrl, setPrUrl] = useState<string | null>(null);
 
@@ -73,7 +75,7 @@ const AssessmentOverview: React.FC<{ report: AssessmentReport }> = ({ report }) 
                 </div >
                 <button 
                   onClick={() => handleRemediate(f)}
-                  disabled={remediating === f.id}
+                  disabled={remediating === f.id || !isAvailable}
                   className="text-xs font-bold uppercase tracking-widest text-accent-orange hover:underline disabled:opacity-50"
                 >
                   {remediating === f.id ? 'Generating...' : 'Fix with NarangOS'}

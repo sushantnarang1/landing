@@ -2,15 +2,20 @@
 import React, { useState } from 'react';
 import AssessmentOverview from '@/components/AssessmentOverview';
 import { AssessmentReport } from '@/types/assessments/models';
+import { apiUrl } from '@/lib/api/client';
+import { useLocalBackend } from '@/lib/api/use-local-backend';
 
 export default function AssessmentsOverviewPage() {
+  const { isAvailable, isPages } = useLocalBackend();
   const [report, setReport] = useState<AssessmentReport | null>(null);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const runAssessment = async () => {
     setLoading(true);
+    setErrorMessage('');
     try {
-      const response = await fetch('/api/assessments/run', {
+      const response = await fetch(apiUrl('/api/assessments/run'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -56,11 +61,11 @@ export default function AssessmentsOverviewPage() {
         })
       });
 
-      if (!response.ok) throw new Error('Assessment failed');
+      if (!response.ok) throw new Error('Assessment failed. Check that the local Docker app is running.');
       const result: AssessmentReport = await response.json();
       setReport(result);
     } catch (error) {
-      console.error('Assessment error:', error);
+      setErrorMessage(error instanceof Error ? error.message : 'Could not connect to the local Docker app.');
     } finally {
       setLoading(false);
     }
@@ -75,12 +80,20 @@ export default function AssessmentsOverviewPage() {
         </div >
         <button 
           onClick={runAssessment} 
-          disabled={loading}
+          disabled={loading || !isAvailable}
           className="bg-bg-dark text-text-inverse px-6 py-3 rounded-sm font-bold hover:bg-neutral-800 transition-all disabled:opacity-50"
         >
-          {loading ? 'Running Assessment...' : 'Run New Assessment'}
+          {loading
+            ? 'Running Assessment...'
+            : isPages && !isAvailable
+              ? 'Start local Docker app to enable'
+              : 'Run New Assessment'}
         </button>
       </div >
+
+      {errorMessage && (
+        <p className="mb-6 text-sm text-red-600" role="alert">{errorMessage}</p>
+      )}
 
       {report ? (
         <AssessmentOverview report={report} />
@@ -93,9 +106,14 @@ export default function AssessmentsOverviewPage() {
           </p>
           <button 
             onClick={runAssessment}
+            disabled={loading || !isAvailable}
             className="bg-accent-orange text-bg-warm px-8 py-3 rounded-sm font-bold hover:opacity-90 transition-all"
           >
-            Run Demo Assessment
+            {loading
+              ? 'Running Assessment...'
+              : isPages && !isAvailable
+                ? 'Start local Docker app to enable'
+                : 'Run Demo Assessment'}
           </button>
         </div >
       )}

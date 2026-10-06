@@ -12,11 +12,7 @@ export interface EmailProvider {
 
 export class MockEmailProvider implements EmailProvider {
   async sendEmail(payload: EmailPayload): Promise<{ success: boolean; messageId?: string; error?: string }> {
-    console.log('--- MOCK EMAIL SENT ---');
-    console.log('To:', payload.to);
-    console.log('Subject:', payload.subject);
-    console.log('Body:', payload.body);
-    console.log('----------------------');
+    void payload;
     return { success: true, messageId: `mock_${Math.random().toString(36).substr(2, 9)}` };
   }
 }

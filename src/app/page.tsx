@@ -33,7 +33,7 @@ export default function Home() {
             Explore the NarangOS Infrastructure Catalog and Platform Assessment Engine.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="/infrastructure" className="bg-accent-orange text-bg-warm px-8 py-4 rounded-sm font-bold hover:opacity-90 transition-all">
+            <Link href="/infrastructure/catalog" className="bg-accent-orange text-bg-warm px-8 py-4 rounded-sm font-bold hover:opacity-90 transition-all">
               Explore Infrastructure
             </Link>
             <Link href="/assessments/overview" className="border border-neutral-700 px-8 py-4 rounded-sm font-bold hover:bg-neutral-800 transition-all">
