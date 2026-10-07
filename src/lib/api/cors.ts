@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 const allowedOrigins = new Set([
+  'https://narangconsulting.com',
   'https://sushantnarang1.github.io',
   'http://localhost:3000',
   'http://127.0.0.1:3000',

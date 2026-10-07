@@ -1,4 +1,4 @@
-import { cpSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative, sep } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -25,8 +25,7 @@ try {
 
   symlinkSync(join(projectRoot, 'node_modules'), join(stagingDirectory, 'node_modules'), 'dir');
 
-  const packageJson = JSON.parse(readFileSync(join(projectRoot, 'package.json'), 'utf8'));
-  const pagesBasePath = process.env.NEXT_BASE_PATH ?? `/${packageJson.name}`;
+  const pagesBasePath = process.env.NEXT_BASE_PATH ?? '';
   const build = spawnSync('npm', ['run', 'build', '--', '--webpack'], {
     cwd: stagingDirectory,
     stdio: 'inherit',
